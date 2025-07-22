@@ -2,7 +2,7 @@ import { apiClient } from "@/config/service.config";
 import { LoginRequest } from "@/types/login-request";
 import { LoginResponse } from "@/types/login-response";
 import axios from "axios";
-
+import Cookies from 'js-cookie';
 export class AuthService {
   private static instance: AuthService;
 
@@ -21,8 +21,9 @@ export class AuthService {
         "/auth/login",
         loginRequest
       );
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("refreshToken", response.data.refreshToken);
+      //CONFIG PROD HTTP ONLY COOKIES
+      Cookies.set('token', response.data.token);
+      Cookies.set('refresh-token', response.data.token);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -36,8 +37,8 @@ export class AuthService {
 
   async logout(): Promise<void> {
     try {
-      localStorage.removeItem("token");
-      localStorage.removeItem("refreshToken");
+      Cookies.remove('token');
+      Cookies.remove('refresh-token');
     } catch (error) {
       console.log("ERROR", error);
     }
@@ -50,19 +51,19 @@ export class AuthService {
         {},
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("refreshToken")}`,
+            Authorization: `Bearer ${this.getToken()}`,
           },
         }
       );
-      localStorage.setItem("token", response.data.token);
+       Cookies.set('token', response.data.token);
       return response.data;
     } catch (error) {
       throw new Error("Error en autenticacion");
     }
   }
 
-  getToken(): string | null {
-    return localStorage.getItem('token');
+  getToken(): string | undefined {
+    return Cookies.get('token');
   }
 
   isAuthenticated(): boolean {

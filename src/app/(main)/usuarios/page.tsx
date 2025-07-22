@@ -1,9 +1,9 @@
-import Image from "next/image";
+import UsuariosHome from "@/components/usuarios/home";
 
 export default function Usuarios() {
   return (
     <>
-        <h1>USUARIOS HOME</h1>
+        <UsuariosHome />
     </>
   );
 }

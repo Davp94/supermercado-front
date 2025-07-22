@@ -1,12 +1,14 @@
 'use client'
 import { useAuth } from '@/hooks/useAuth';
 import { LoginRequest } from '@/types/login-request';
+import { useRouter } from 'next/navigation';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { useForm, Controller  } from 'react-hook-form';
 export default function LoginForm() {
+  const router = useRouter();
   const { login, loading, error} = useAuth();
   const { 
     control,
@@ -27,6 +29,7 @@ export default function LoginForm() {
     try {
       const loginRequest: LoginRequest = getValues();
       await login(loginRequest);
+      router.push('/')
     } catch (error) {
       console.log('ERROR LOGIN', error);
     }

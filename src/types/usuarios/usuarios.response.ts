@@ -9,5 +9,6 @@ export interface UsuariosResponse {
   dni: string;
   tipoDocumento: string;
   nacionalidad: string;
+  estado: string;
   roles: string[];
 }

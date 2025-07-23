@@ -8,11 +8,5 @@ export default function MainLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={``}>
-        <PrimeReactProvider>{children}</PrimeReactProvider>
-      </body>
-    </html>
-  );
+  return <div> {children}</div>;
 }

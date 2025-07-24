@@ -76,6 +76,8 @@ export default function LoginForm() {
                       className={`w-full ${fieldState.error ? 'p-invalid' : ''}`}
                       placeholder='Ingresa tu correo electronico'
                       autoComplete='email'
+                      
+
                     />
                     {getFormErrorMessage(field.name)}
                     

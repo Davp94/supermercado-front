@@ -13,6 +13,9 @@ import { InputIcon } from 'primereact/inputicon';
 import { Toolbar } from "primereact/toolbar";
 import { Column } from "primereact/column";
 import { Dialog } from "primereact/dialog";
+import { ActionTypeEnum } from "@/constant/enum/action-type.enum";
+import UsuariosView from "./view";
+import UsuariosForm from "./form";
 
 export default function UsuariosHome() {
   // const { getUsuarios, loading } = useUsuarios();
@@ -36,6 +39,7 @@ export default function UsuariosHome() {
     const [usuario, setUsuario] = useState<UsuariosResponse | null>(null);
     const [submitted, setSubmitted] = useState<boolean>(false);
     const [globalFilter, setGlobalFilter] = useState<string>('');
+    const [flagAction, setFlagAction] = useState<number>(0);
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
     const { getUsuarios, loading } = useUsuarios();
@@ -51,16 +55,27 @@ export default function UsuariosHome() {
     }, []);
 
     const openNew = () => {
+      setFlagAction(ActionTypeEnum.CREATE);
       setSubmitted(false);
       setUsuariosDialog(true);
     };
 
-    const hideDialog = () => {
+    const hideDialog = (updateData: boolean) => {
+        if(updateData){
+            initComponent();
+        }
         setSubmitted(false);
         setUsuariosDialog(false);
     };
 
     const editUsuario = (usuario: UsuariosResponse) => {
+        setFlagAction(ActionTypeEnum.UPDATE);
+        setUsuario({ ...usuario });
+        setUsuariosDialog(true);
+    };
+
+    const viewUsuario = (usuario: UsuariosResponse) => {
+        setFlagAction(ActionTypeEnum.READ);
         setUsuario({ ...usuario });
         setUsuariosDialog(true);
     };
@@ -110,6 +125,7 @@ export default function UsuariosHome() {
         return (
             <>
                 <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => editUsuario(rowData)} />
+                <Button icon="pi pi-eye" rounded outlined className="mr-2" onClick={() => viewUsuario(rowData)} />
                 <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => confirmDeleteUsuario(rowData)} />
             </>
         );
@@ -162,7 +178,18 @@ export default function UsuariosHome() {
             </div>
 
             <Dialog visible={usuariosDialog} header="Usuarios Form" modal className="p-fluid" onHide={hideDialog}>
-                <p>{JSON.stringify(usuario)}</p>
+                {<><p>{JSON.stringify(usuario)}</p></>}
+                {flagAction == ActionTypeEnum.READ && (
+                    <UsuariosView usuario={usuario} hideDialog={hideDialog} />
+                )}
+                {[ActionTypeEnum.CREATE, ActionTypeEnum.UPDATE].includes(flagAction) && (
+                    <UsuariosForm 
+                        usuario={usuario} 
+                        flagAction={flagAction} 
+                        toast={toast} 
+                        hideDialog={hideDialog}
+                    />
+                )}
                
             </Dialog>
             <ConfirmDialog />

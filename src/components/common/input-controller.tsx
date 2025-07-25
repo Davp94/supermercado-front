@@ -1,22 +1,23 @@
 import { InputText } from "primereact/inputtext";
-import { Controller, RegisterOptions } from "react-hook-form";
+import { Control, Controller, RegisterOptions } from "react-hook-form";
 
+//TODO review control type
 interface InputControllerProps {
   name: string;
-  control: () => void;
+  control: Control<any>;
   rules: RegisterOptions;
   label: string;
-  icon: string;
-  placeholder: string;
+  icon?: string;
+  placeholder?: string;
 }
-export default function InputController<InputControllerProps>({
+export default function InputController({
   name,
   control,
   rules,
   label,
   icon,
   placeholder,
-}) {
+}: InputControllerProps) {
 
   return (
     <Controller

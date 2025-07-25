@@ -7,7 +7,7 @@ interface UsuariosViewProps {
   usuario: UsuariosResponse;
   hideDialog: () => void;
 }
-export default function UsuariosView<UsuariosViewProps>({
+export default function UsuariosView({
   usuario,
   hideDialog,
 }: UsuariosViewProps) {

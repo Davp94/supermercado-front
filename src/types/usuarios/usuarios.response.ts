@@ -1,8 +1,10 @@
 export interface UsuariosResponse {
-  id: number;
+  id: number | null;
   email: string;
-  fechaNacimiento: string;
+  fechaNacimiento?: string;
   nombreCompleto: string;
+  nombres: string;
+  apellidos: string;
   genero: string;
   telefono: string;
   direccion: string;
@@ -10,5 +12,5 @@ export interface UsuariosResponse {
   tipoDocumento: string;
   nacionalidad: string;
   estado: string;
-  roles: string[];
+  roles?: string[];
 }

@@ -46,8 +46,7 @@ export default function UsuariosHome() {
 
     const initComponent = async () => {
       const usuarios = await getUsuarios();
-      console.log("🚀 ~ initComponent ~ usuarios:", usuarios)
-      setUsuarios(await getUsuarios());
+      setUsuarios(usuarios);
     };
 
     useEffect(() => {
@@ -61,6 +60,7 @@ export default function UsuariosHome() {
     };
 
     const hideDialog = (updateData?: boolean) => {
+        console.log("🚀 ~ hideDialog ~ updateData:", updateData);
         if(updateData){
             initComponent();
         }

@@ -13,26 +13,26 @@ import { RolesResponse } from "@/types/roles/roles-response";
 import { UsuarioRequest } from "@/types/usuarios/usuario.request";
 import { DateFormat } from "@/utils/DateFormat";
 import { UsuarioUpdateRequest } from "@/types/usuarios/usuarios-update.request";
-interface UsuariosFormProps {
-  usuario: UsuariosResponse | null;
+import { PermisoResponse } from "@/types/permisos/permiso-response";
+interface RolesFormPros {
+  rol: RolesResponse | null;
   hideDialog: (updateData?: boolean) => void;
   toast: RefObject<Toast | null>;
   flagAction: number;
 }
 export default function UsuariosForm({
-  usuario,
+  rol,
   hideDialog,
   toast,
   flagAction,
-}: UsuariosFormProps) {
-  const [roles, setRoles] = useState<RolesResponse[]>([]);
-  const [fechaNacimiento, setFechaNacimiento] = useState<any>("");
-  const [rolesUsuario, setRolesUsuario] = useState<any>("");
+}: RolesFormPros) {
+  const [permisos, setPermisos] = useState<PermisoResponse[]>([]);
+  const [permisosRol, setPermisosRol] = useState<any>("");
   const {
     loading: loadingUsuarios,
     createUsuario,
     updateUsuario,
-  } = useUsuarios();
+  } = useRoles();
   const { getRoles, loading: loadingRoles } = useRoles();
   const {
     control,

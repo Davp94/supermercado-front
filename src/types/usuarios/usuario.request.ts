@@ -1,6 +1,7 @@
 export interface UsuarioRequest {
+  id?: number | null;
   email: string;
-  fechaNacimiento: string;
+  fechaNacimiento?: string;
   nombres: string;
   apellidos: string;
   genero: string;
@@ -9,5 +10,5 @@ export interface UsuarioRequest {
   dni: string;
   tipoDocumento: string;
   nacionalidad: string;
-  rolesIds: number[];
+  rolesIds?: number[];
 }

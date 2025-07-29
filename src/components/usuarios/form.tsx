@@ -9,9 +9,9 @@ import { Calendar } from "primereact/calendar";
 import { MultiSelect } from "primereact/multiselect";
 import { Button } from "primereact/button";
 interface UsuariosFormProps {
-  usuario: UsuariosResponse;
-  hideDialog: (updateData: boolean) => void;
-  toast: RefObject<Toast>;
+  usuario: UsuariosResponse | null;
+  hideDialog: (updateData?: boolean) => void;
+  toast: RefObject<Toast | null>;
   flagAction: number;
 }
 export default function UsuariosForm({
@@ -50,6 +50,7 @@ export default function UsuariosForm({
   });
 
   const initForm = async () => {
+    
     if (usuario != null && flagAction == ActionTypeEnum.UPDATE) {
       setValue("id", usuario.id);
       setValue("email", usuario.email);
@@ -87,9 +88,9 @@ export default function UsuariosForm({
 
   return (
     <>
-      <form className="">
-        <div className="grid p-fluid">
-          <div className="field col-12 md:col-6">
+      <form className="w-full mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 p-fluid gap-4 mb-4">
+          <div className="">
             <InputController
               name="email"
               control={control}
@@ -101,9 +102,10 @@ export default function UsuariosForm({
                 },
               }}
               label="Correo*"
+              placeholder="Correo"
             />
           </div>
-          <div className="field col-12 md:col-6">
+          <div className="">
             <InputController
               name="nombres"
               control={control}
@@ -111,9 +113,10 @@ export default function UsuariosForm({
                 required: "Nombres son requerido",
               }}
               label="Nombres*"
+              placeholder="Nombres"
             />
           </div>
-          <div className="field col-12 md:col-6">
+          <div className="">
             <InputController
               name="apellidos"
               control={control}
@@ -121,9 +124,10 @@ export default function UsuariosForm({
                 required: "Apellidos son requerido",
               }}
               label="Apellidos*"
+              placeholder="Apellidos"
             />
           </div>
-          <div className="field col-12 md:col-6">
+          <div className="">
             <InputController
               name="telefono"
               control={control}
@@ -131,9 +135,10 @@ export default function UsuariosForm({
                 required: "Telefono es requerido",
               }}
               label="Telefono*"
+              placeholder="Telefono"
             />
           </div>
-          <div className="field col-12 md:col-6">
+          <div className="">
             <InputController
               name="direccion"
               control={control}
@@ -141,9 +146,10 @@ export default function UsuariosForm({
                 required: "Direccion es requerido",
               }}
               label="Direccion*"
+              placeholder="Direccion"
             />
           </div>
-          <div className="field col-12 md:col-6">
+          <div className="">
             <InputController
               name="dni"
               control={control}
@@ -151,9 +157,10 @@ export default function UsuariosForm({
                 required: "Dni es requerido",
               }}
               label="Dni*"
+              placeholder="Dni"
             />
           </div>
-          <div className="field col-12 md:col-6">
+          <div className="">
             <InputController
               name="tipoDocumento"
               control={control}
@@ -161,9 +168,10 @@ export default function UsuariosForm({
                 required: "Tipo Documento es requerido",
               }}
               label="Tipo Documento*"
+              placeholder="Tipo documento"
             />
           </div>
-          <div className="field col-12 md:col-6">
+          <div className="">
             <InputController
               name="nacionalidad"
               control={control}
@@ -171,16 +179,18 @@ export default function UsuariosForm({
                 required: "Nacionalidad es requerido",
               }}
               label="Nacionalidad*"
+              placeholder="nacionalidad"
             />
           </div>
-          <div className="field col-12 md:col-6">
+          <div className="">
             <Calendar
               value={fechaNacimiento}
               onChange={(e) => setFechaNacimiento(e.value)}
               dateFormat="yy-mm-dd"
+              placeholder="fecha nacimiento"
             />
           </div>
-          <div className="field col-12 md:col-6">
+          <div className="">
             <MultiSelect
               value={rolesUsuario}
               onChange={(e) => setRolesUsuario(e.value)}
@@ -197,7 +207,7 @@ export default function UsuariosForm({
             type="button"
             label="Cancelar"
             className="w-full"
-            onClick={onCloseForm}
+            onClick={() => onCloseForm}
           />
           <Button
             type="button"

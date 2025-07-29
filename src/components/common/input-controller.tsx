@@ -29,7 +29,7 @@ export default function InputController({
           <InputText
             id={field.name}
             {...field}
-            className={`w-full ${fieldState.error ? "p-invalid" : ""}`}
+            className={`${fieldState.error ? "p-invalid" : ""}`}
             placeholder={placeholder}
           />
           {fieldState.error && <small className="p-error">{fieldState.error.message}</small>}

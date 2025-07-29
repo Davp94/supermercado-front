@@ -4,7 +4,7 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { useEffect, useRef, useState } from "react";
 interface UsuariosViewProps {
-  usuario: UsuariosResponse;
+  usuario: UsuariosResponse | null;
   hideDialog: () => void;
 }
 export default function UsuariosView({

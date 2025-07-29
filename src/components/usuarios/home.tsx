@@ -60,7 +60,7 @@ export default function UsuariosHome() {
       setUsuariosDialog(true);
     };
 
-    const hideDialog = (updateData: boolean) => {
+    const hideDialog = (updateData?: boolean) => {
         if(updateData){
             initComponent();
         }
@@ -177,8 +177,7 @@ export default function UsuariosHome() {
                 </DataTable>
             </div>
 
-            <Dialog visible={usuariosDialog} header="Usuarios Form" modal className="p-fluid" onHide={hideDialog}>
-                {<><p>{JSON.stringify(usuario)}</p></>}
+            <Dialog visible={usuariosDialog} header="Usuarios Form" modal className="p-fluid" onHide={hideDialog} style={{ width: '60vw' }}>
                 {flagAction == ActionTypeEnum.READ && (
                     <UsuariosView usuario={usuario} hideDialog={hideDialog} />
                 )}
@@ -190,7 +189,6 @@ export default function UsuariosHome() {
                         hideDialog={hideDialog}
                     />
                 )}
-               
             </Dialog>
             <ConfirmDialog />
         </div>

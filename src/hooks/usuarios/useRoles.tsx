@@ -59,6 +59,40 @@ export const useRoles = () => {
     }
   };
 
+  const updateRol = async (rolesRquest: RolesRequest, id: number) => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await rolesService.updateRol(rolesRquest, id);
+      return response;
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+        throw err;
+      }
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getPermisos = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await rolesService.getpermisos();
+      return response;
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+        throw err;
+      }
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const crearPermiso = async (permisoRequest: PermisoRequest) => {
     setLoading(true);
     setError("");
@@ -80,6 +114,8 @@ export const useRoles = () => {
     getRoles,
     getRolById,
     createRol,
+    updateRol,
+    getPermisos,
     crearPermiso,
     loading,
     error,

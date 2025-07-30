@@ -19,9 +19,7 @@ export class RolesService {
 
   async getRoles(): Promise<RolesResponse[]> {
     try {
-      const response = await apiClient.get<RolesResponse[]>(
-        "/roles"
-      );
+      const response = await apiClient.get<RolesResponse[]>("/roles");
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -35,9 +33,7 @@ export class RolesService {
 
   async getRolById(id: number): Promise<RolesResponse> {
     try {
-      const response = await apiClient.get<RolesResponse>(
-         `/roles/${id}`
-      );
+      const response = await apiClient.get<RolesResponse>(`/roles/${id}`);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -49,33 +45,67 @@ export class RolesService {
     }
   }
 
-    async guardarRol(rolRequest: RolesRequest): Promise<RolesResponse> {
+  async guardarRol(rolRequest: RolesRequest): Promise<RolesResponse> {
     try {
       const response = await apiClient.post<RolesResponse>(
-        "/roles", rolRequest
+        "/roles",
+        rolRequest
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || "Error al crear roles");
+      }
+      throw new Error("Error creando roles");
+    }
+  }
+
+  async updateRol(
+    rolRequest: RolesRequest,
+    id: number
+  ): Promise<RolesResponse> {
+    try {
+      const response = await apiClient.put<RolesResponse>(
+        `/roles/${id}`,
+        rolRequest
       );
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw new Error(
-          error.response.data.message || "Error al crear roles"
+          error.response.data.message || "Error al actualizar roles"
         );
       }
-      throw new Error("Error creando roles");
+      throw new Error("Error actualizar roles");
+    }
+  }
+
+  async getpermisos(): Promise<PermisoResponse[]> {
+    try {
+      const response = await apiClient.get<PermisoResponse[]>(
+        "/roles/permisos"
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(
+          error.response.data.message || "Error al recuperar permisos"
+        );
+      }
+      throw new Error("Error al recuperar permisos");
     }
   }
 
   async crearPermiso(permisoRequest: PermisoRequest): Promise<PermisoResponse> {
     try {
       const response = await apiClient.post<PermisoResponse>(
-        "/roles/permiso", permisoRequest
+        "/roles/permiso",
+        permisoRequest
       );
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        throw new Error(
-          error.response.data.message || "Error al crear roles"
-        );
+        throw new Error(error.response.data.message || "Error al crear roles");
       }
       throw new Error("Error creando roles");
     }

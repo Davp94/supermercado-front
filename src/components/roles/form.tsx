@@ -14,26 +14,26 @@ import { UsuarioRequest } from "@/types/usuarios/usuario.request";
 import { DateFormat } from "@/utils/DateFormat";
 import { UsuarioUpdateRequest } from "@/types/usuarios/usuarios-update.request";
 import { PermisoResponse } from "@/types/permisos/permiso-response";
+import { Sidebar } from "primereact/sidebar";
+import { RolesRequest } from "@/types/roles/roles-request";
+import PermisosForm from "./permisos-form";
 interface RolesFormPros {
-  rol: RolesResponse | null;
+  rolId: number | null;
   hideDialog: (updateData?: boolean) => void;
   toast: RefObject<Toast | null>;
   flagAction: number;
 }
-export default function UsuariosForm({
-  rol,
+export default function RolesForm({
+  rolId,
   hideDialog,
   toast,
   flagAction,
 }: RolesFormPros) {
+  const [rol, setRol] = useState<RolesResponse | null>(null);
   const [permisos, setPermisos] = useState<PermisoResponse[]>([]);
   const [permisosRol, setPermisosRol] = useState<any>("");
-  const {
-    loading: loadingUsuarios,
-    createUsuario,
-    updateUsuario,
-  } = useRoles();
-  const { getRoles, loading: loadingRoles } = useRoles();
+  const [permisosDrawer, setPermisosDrawer] = useState<boolean>(false);
+  const { loading, createRol, getRolById, getPermisos, updateRol } = useRoles();
   const {
     control,
     handleSubmit,
@@ -45,70 +45,65 @@ export default function UsuariosForm({
   } = useForm({
     defaultValues: {
       id: null,
-      email: "",
-      nombres: "",
-      apellidos: "",
-      genero: "",
-      telefono: "",
-      direccion: "",
-      dni: "",
-      tipoDocumento: "",
-      nacionalidad: "",
-      estado: "",
+      nombre: "",
+      descripcion: "",
     },
   });
 
   const initForm = async () => {
-    const rolesRetrieved = await getRoles();
-    setRoles(rolesRetrieved);
-    if (usuario != null && flagAction == ActionTypeEnum.UPDATE) {
-      setValue("email", usuario.email);
-      setValue("nombres", usuario.nombres);
-      setValue("apellidos", usuario.apellidos);
-      setValue("genero", usuario.genero);
-      setValue("telefono", usuario.telefono);
-      setValue("direccion", usuario.direccion);
-      setValue("dni", usuario.dni);
-      setValue("tipoDocumento", usuario.tipoDocumento);
-      setValue("nacionalidad", usuario.nacionalidad);
-      setValue("estado", usuario.estado);
+    const permisosRetrieved = await getPermisos();
+    setPermisos(permisosRetrieved);
+    try {
+      if (rolId != null) {
+        const rolRetrieved = await getRolById(rolId);
+        setRol(rolRetrieved);
+        setPermisosRol(
+          permisosRetrieved.filter((permiso) =>
+            rolRetrieved.permisosIds.includes(permiso.id)
+          )
+        );
+        setValue("nombre", rolRetrieved.nombre);
+        setValue("descripcion", rolRetrieved.descripcion);
+      }
+    } catch (error) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Rejected",
+        detail: "Error al recuperar rol",
+        life: 3000,
+      });
     }
   };
 
   const onSubmit = async () => {
-    if (ActionTypeEnum.CREATE) {
-      const result: UsuarioRequest = getValues();
-      result.fechaNacimiento = DateFormat.dateFormat(fechaNacimiento);
-      result.rolesIds = rolesUsuario;
+    if (flagAction == ActionTypeEnum.CREATE) {
+      const result: RolesRequest = getValues();
+      result.permisosIds = permisosRol.map((permisoRol: PermisoResponse) => permisoRol.id);
       try {
-        await createUsuario(result);
+        await createRol(result);
         reset();
         onCloseForm(true);
       } catch (error) {
         toast.current?.show({
           severity: "error",
           summary: "Rejected",
-          detail: "Error al crear usuario",
+          detail: "Error al crear el rol",
           life: 3000,
         });
       }
     }
-    if (ActionTypeEnum.UPDATE) {
-      const resultUpdate: UsuarioUpdateRequest = {
-        email: getValues("email"),
-        direccion: getValues("direccion"),
-        telefono: getValues("telefono"),
-        rolesIds: rolesUsuario,
-      };
+    if (flagAction == ActionTypeEnum.UPDATE) {
+      const resultUpdate: RolesRequest = getValues();
+      resultUpdate.permisosIds = permisosRol.map((permisoRol: PermisoResponse) => permisoRol.id);
       try {
-        await updateUsuario(resultUpdate, usuario!.id as number);
+        await updateRol(resultUpdate, rolId as number);
         reset();
         onCloseForm(true);
       } catch (error) {
         toast.current?.show({
           severity: "error",
           summary: "Rejected",
-          detail: "Error al actualizar el usuario",
+          detail: "Error al actualizar el rol",
           life: 3000,
         });
       }
@@ -120,6 +115,14 @@ export default function UsuariosForm({
     hideDialog(updateData ? updateData : false);
   };
 
+  const onCloseDrawer = async (updateData?: boolean) => {
+    if(updateData){
+      const permisosRetrieved = await getPermisos();
+      setPermisos(permisosRetrieved);
+    }
+    setPermisosDrawer(false);
+  }
+
   useEffect(() => {
     initForm();
   }, []);
@@ -130,132 +133,79 @@ export default function UsuariosForm({
         <div className="grid grid-cols-1 md:grid-cols-2 p-fluid gap-4 mb-4">
           <div className="">
             <InputController
-              name="email"
+              name="nombre"
               control={control}
               rules={{
-                required: "El correo electronico es requerido",
-                pattern: {
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: "El formato del correo electronico es invalido",
-                },
+                required: "Nombre es requerido",
               }}
-              label="Correo*"
-              placeholder="Correo"
+              label="Nombre*"
+              placeholder="Nombre"
             />
           </div>
           <div className="">
             <InputController
-              name="nombres"
+              name="descripcion"
               control={control}
               rules={{
-                required: "Nombres son requerido",
+                required: "descripcion es requerido",
               }}
-              label="Nombres*"
-              placeholder="Nombres"
-            />
-          </div>
-          <div className="">
-            <InputController
-              name="apellidos"
-              control={control}
-              rules={{
-                required: "Apellidos son requerido",
-              }}
-              label="Apellidos*"
-              placeholder="Apellidos"
-            />
-          </div>
-          <div className="">
-            <InputController
-              name="telefono"
-              control={control}
-              rules={{
-                required: "Telefono es requerido",
-              }}
-              label="Telefono*"
-              placeholder="Telefono"
-            />
-          </div>
-          <div className="">
-            <InputController
-              name="direccion"
-              control={control}
-              rules={{
-                required: "Direccion es requerido",
-              }}
-              label="Direccion*"
-              placeholder="Direccion"
-            />
-          </div>
-          <div className="">
-            <InputController
-              name="dni"
-              control={control}
-              rules={{
-                required: "Dni es requerido",
-              }}
-              label="Dni*"
-              placeholder="Dni"
-            />
-          </div>
-          <div className="">
-            <InputController
-              name="tipoDocumento"
-              control={control}
-              rules={{
-                required: "Tipo Documento es requerido",
-              }}
-              label="Tipo Documento*"
-              placeholder="Tipo documento"
-            />
-          </div>
-          <div className="">
-            <InputController
-              name="nacionalidad"
-              control={control}
-              rules={{
-                required: "Nacionalidad es requerido",
-              }}
-              label="Nacionalidad*"
-              placeholder="nacionalidad"
-            />
-          </div>
-          <div className="">
-            <Calendar
-              value={fechaNacimiento}
-              onChange={(e) => setFechaNacimiento(e.value)}
-              dateFormat="yy-mm-dd"
-              placeholder="fecha nacimiento"
+              label="Descripcion*"
+              placeholder="descripcion"
             />
           </div>
           <div className="">
             <MultiSelect
-              value={rolesUsuario}
-              onChange={(e) => setRolesUsuario(e.value)}
-              options={roles}
+              value={permisosRol}
+              onChange={(e) => setPermisosRol(e.value)}
+              options={permisos}
               optionLabel="nombre"
-              placeholder="Selecciones Roles para el usuario"
+              placeholder="Selecciones permisos para el rol"
               maxSelectedLabels={3}
-              optionValue="id"
               className="w-full md:w-20rem"
             />
           </div>
+          <div>
+            <Button
+            type="button"
+            label="Crear Permiso"
+            className="w-full"
+            onClick={()=>setPermisosDrawer(true)}
+          />
+          </div>
+          {permisosRol.length > 0 && (
+            <div className="w-full">
+              <h2>Permisos Seleccionados:</h2>
+            
+            {permisosRol.map((permisoRol: PermisoResponse) => (
+              <label key={permisoRol.id}>{permisoRol.nombre} -</label>
+            ))}
+            </div>
+          )}
         </div>
-        <div className="flex flex-row justify-end items-end gap-2">
+        <div className="md:w-1/2 flex flex-row justify-end items-end gap-2">
           <Button
             type="button"
             label="Cancelar"
+            severity="danger"
             className="w-full"
-            onClick={() => onCloseForm}
+            onClick={() => onCloseForm(false)}
           />
           <Button
             type="button"
-            label="Crear Usuario"
+            label="Guardar Rol"
             className="w-full"
             onClick={onSubmit}
           />
         </div>
       </form>
+      <Sidebar
+        visible={permisosDrawer}
+        position="right"
+        onHide={() => onCloseDrawer(false)}
+      >
+        <h2>Permisos Form</h2>
+        <PermisosForm hideDrawer={onCloseDrawer} toast={toast} />
+      </Sidebar>
     </>
   );
 }

@@ -64,6 +64,7 @@ export default function UsuariosHome() {
         if(updateData){
             initComponent();
         }
+        setUsuario(null);
         setSubmitted(false);
         setUsuariosDialog(false);
     };
@@ -177,7 +178,7 @@ export default function UsuariosHome() {
                 </DataTable>
             </div>
 
-            <Dialog visible={usuariosDialog} header="Usuarios Form" modal className="p-fluid" onHide={hideDialog} style={{ width: '60vw' }}>
+            <Dialog visible={usuariosDialog} header="Usuarios Form" modal className="p-fluid" onHide={hideDialog} style={{ width: '60vw' }}  closable={false}>
                 {flagAction == ActionTypeEnum.READ && (
                     <UsuariosView usuario={usuario} hideDialog={hideDialog} />
                 )}

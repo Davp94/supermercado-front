@@ -76,7 +76,7 @@ export default function UsuariosForm({
   };
 
   const onSubmit = async () => {
-    if (ActionTypeEnum.CREATE) {
+    if (flagAction == ActionTypeEnum.CREATE) {
       const result: UsuarioRequest = getValues();
       result.fechaNacimiento = DateFormat.dateFormat(fechaNacimiento);
       result.rolesIds = rolesUsuario;
@@ -93,7 +93,7 @@ export default function UsuariosForm({
         });
       }
     }
-    if (ActionTypeEnum.UPDATE) {
+    if (flagAction == ActionTypeEnum.UPDATE) {
       const resultUpdate: UsuarioUpdateRequest = {
         email: getValues("email"),
         direccion: getValues("direccion"),
@@ -241,16 +241,17 @@ export default function UsuariosForm({
             />
           </div>
         </div>
-        <div className="flex flex-row justify-end items-end gap-2">
+        <div className="md:w-1/2 flex flex-row justify-end items-end gap-2">
           <Button
             type="button"
             label="Cancelar"
+            severity="danger"
             className="w-full"
             onClick={() => onCloseForm}
           />
           <Button
             type="button"
-            label="Crear Usuario"
+            label="Guardar Usuario"
             className="w-full"
             onClick={onSubmit}
           />

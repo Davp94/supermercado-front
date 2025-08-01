@@ -27,7 +27,7 @@ export default function NotasHome() {
     //TODO add services 
 
     const initComponent = async () => {
-      //LOAD NOTAS & TIPOS
+      //LOAD NOTAS & TIPOS //MCP
     };
 
     useEffect(() => {

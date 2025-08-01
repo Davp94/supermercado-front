@@ -22,13 +22,33 @@ export class InventarioService {
     return InventarioService.instance;
   }
 
-  async getProductos(
-    paginationRequest: PaginationRequest<GetProductosRequest>
-  ): Promise<PaginationResponse<ProductosResponse>> {
+  async getProductos(params: {
+    pageNumber?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: "ASC" | "DESC";
+    filterValue?: string;
+    almacenId?: number;
+    nombre?: string;
+    descripcion?: string;
+    codigoBarra?: string;
+    marca?: string;
+    nombreCategoria?: string;
+    activo?: boolean;
+    precioMin?: number;
+    precioMax?: number;
+    fechaRegistroDesde?: string;
+    fechaRegistroHasta?: string;
+  }): Promise<PaginationResponse<ProductosResponse>> {
     try {
+      const cleanParams = Object.fromEntries(
+        Object.entries(params).filter(
+          ([_, value]) => value !== undefined && value !== null && value !== ""
+        )
+      );
       const response = await apiClient.get<
         PaginationResponse<ProductosResponse>
-      >("/productos/pagination", { params: paginationRequest });
+      >("/productos/pagination", { params: cleanParams });
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -54,9 +74,9 @@ export class InventarioService {
     }
   }
 
-  async getAlmacenes(): Promise<AlmacenResponse[]> {
+  async getAlmacenes(sucursalId: number): Promise<AlmacenResponse[]> {
     try {
-      const response = await apiClient.get<AlmacenResponse[]>("/almacenes");
+      const response = await apiClient.get<AlmacenResponse[]>(`/sucursales/almacenes/${sucursalId}`);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

@@ -3,6 +3,8 @@ import { AlmacenResponse } from "@/types/inventario/almacen.response";
 import { GetProductosRequest } from "@/types/inventario/get-productos.request";
 import { ProductosResponse } from "@/types/inventario/productos.response";
 import { SucursalResponse } from "@/types/inventario/sucursal.response";
+import { NotasRequest } from "@/types/notas/notas-request";
+import { NotasResponse } from "@/types/notas/notas-response";
 import { PaginationRequest } from "@/types/pagination/pagination.request";
 import { PaginationResponse } from "@/types/pagination/pagination.response";
 import { PermisoRequest } from "@/types/permisos/permiso-request";
@@ -22,69 +24,34 @@ export class NotasService {
     return NotasService.instance;
   }
 
-  async getProductos(
-    paginationRequest: PaginationRequest<GetProductosRequest>
-  ): Promise<PaginationResponse<ProductosResponse>> {
+  async getNotas(): Promise<NotasResponse[]> {
     try {
-      const response = await apiClient.get<
-        PaginationResponse<ProductosResponse>
-      >("/productos/pagination", { params: paginationRequest });
+      const response = await apiClient.get<NotasResponse[]>(`/notas`);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw new Error(
-          error.response.data.message || "Error al obtener productos"
+          error.response.data.message || "Error al obtener notas"
         );
       }
-      throw new Error("Error obtener productos");
+      throw new Error("Error al obtener notas");
     }
   }
 
-  async getSucursales(): Promise<SucursalResponse[]> {
+  async createNota(notaRequest: NotasRequest): Promise<NotasResponse> {
     try {
-      const response = await apiClient.get<SucursalResponse[]>(`/sucursales`);
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        throw new Error(
-          error.response.data.message || "Error al obtener sucursales"
-        );
-      }
-      throw new Error("Error obtener sucursales");
-    }
-  }
-
-  async getAlmacenes(): Promise<AlmacenResponse[]> {
-    try {
-      const response = await apiClient.get<AlmacenResponse[]>("/almacenes");
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        throw new Error(
-          error.response.data.message || "Error al obtener almacenes"
-        );
-      }
-      throw new Error("Error al obtener almacenes");
-    }
-  }
-
-  async addProductoAlmacen(
-    productoId: number,
-    almacenId: number
-  ): Promise<ProductosResponse> {
-    try {
-      const response = await apiClient.post<ProductosResponse>(
-        "/productos/almacen",
-        { productoId: productoId, almacenId: almacenId }
+      const response = await apiClient.post<NotasResponse>(
+        "/notas",
+        notaRequest
       );
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw new Error(
-          error.response.data.message || "Error al obtener almacenes"
+          error.response.data.message || "Error al guardar nota"
         );
       }
-      throw new Error("Error al obtener almacenes");
+      throw new Error("Error al guardar nota");
     }
   }
 }

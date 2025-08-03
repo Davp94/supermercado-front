@@ -5,10 +5,6 @@ import { ProductosResponse } from "@/types/inventario/productos.response";
 import { SucursalResponse } from "@/types/inventario/sucursal.response";
 import { PaginationRequest } from "@/types/pagination/pagination.request";
 import { PaginationResponse } from "@/types/pagination/pagination.response";
-import { PermisoRequest } from "@/types/permisos/permiso-request";
-import { PermisoResponse } from "@/types/permisos/permiso-response";
-import { RolesRequest } from "@/types/roles/roles-request";
-import { RolesResponse } from "@/types/roles/roles-response";
 import axios from "axios";
 export class InventarioService {
   private static instance: InventarioService;
@@ -60,6 +56,22 @@ export class InventarioService {
     }
   }
 
+  async getProductosAlmacen(almacenId: number): Promise<ProductosResponse[]> {
+    try {
+      const response = await apiClient.get<ProductosResponse[]>(
+        `/productos/almacen/${almacenId}`
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(
+          error.response.data.message || "Error al obtener productos"
+        );
+      }
+      throw new Error("Error obtener productos");
+    }
+  }
+
   async getSucursales(): Promise<SucursalResponse[]> {
     try {
       const response = await apiClient.get<SucursalResponse[]>(`/sucursales`);
@@ -76,7 +88,9 @@ export class InventarioService {
 
   async getAlmacenes(sucursalId: number): Promise<AlmacenResponse[]> {
     try {
-      const response = await apiClient.get<AlmacenResponse[]>(`/sucursales/almacenes/${sucursalId}`);
+      const response = await apiClient.get<AlmacenResponse[]>(
+        `/sucursales/almacenes/${sucursalId}`
+      );
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

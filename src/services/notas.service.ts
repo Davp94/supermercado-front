@@ -1,4 +1,5 @@
 import { apiClient } from "@/config/service.config";
+import { EntidadComercialResponse } from "@/types/entidad-comercial.response";
 import { AlmacenResponse } from "@/types/inventario/almacen.response";
 import { GetProductosRequest } from "@/types/inventario/get-productos.request";
 import { ProductosResponse } from "@/types/inventario/productos.response";
@@ -35,6 +36,20 @@ export class NotasService {
         );
       }
       throw new Error("Error al obtener notas");
+    }
+  }
+
+  async getEntidadComercial(): Promise<EntidadComercialResponse[]> {
+    try {
+      const response = await apiClient.get<EntidadComercialResponse[]>(`/entidad-comercial`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(
+          error.response.data.message || "Error al obtener entidades comerciales"
+        );
+      }
+      throw new Error("Error al obtener entidades comerciales");
     }
   }
 

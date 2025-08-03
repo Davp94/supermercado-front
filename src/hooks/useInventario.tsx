@@ -23,11 +23,34 @@ export const useInventario = () => {
     }
   };
 
-  const addProductoToAlmacen = async (productoId: number, almacenId: number) => {
+  const getProductosAlmacen = async (almacenId: number) => {
     setLoading(true);
     setError("");
     try {
-      const response = await inventarioService.addProductoAlmacen(productoId, almacenId);
+      const response = await inventarioService.getProductosAlmacen(almacenId);
+      return response;
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+        throw err;
+      }
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addProductoToAlmacen = async (
+    productoId: number,
+    almacenId: number
+  ) => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await inventarioService.addProductoAlmacen(
+        productoId,
+        almacenId
+      );
       return response;
     } catch (err) {
       if (err instanceof Error) {
@@ -76,6 +99,7 @@ export const useInventario = () => {
 
   return {
     getProductosPagination,
+    getProductosAlmacen,
     addProductoToAlmacen,
     getSucursales,
     getAlmacenes,

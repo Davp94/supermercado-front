@@ -24,6 +24,23 @@ export const useNotas = () => {
     }
   };
 
+  const getEntidadesComerciales = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await notasService.getEntidadComercial();
+      return response;
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+        throw err;
+      }
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const crearNota = async (notaRequest: NotasRequest) => {
     setLoading(true);
     setError("");
@@ -44,6 +61,7 @@ export const useNotas = () => {
   return {
     getNotas,
     crearNota,
+    getEntidadesComerciales,
     loading,
     error,
   };

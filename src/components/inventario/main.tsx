@@ -179,7 +179,7 @@ export default function InventarioHome() {
           label="Stock"
           icon="pi pi-plus"
           severity="info"
-          onClick={() => router.push("nueva-nota?tipo=COMPRA")}
+          onClick={() => router.push(`nueva-nota?tipo=COMPRA&almacenId=${selectedAlmacen?.id}`)}
         />
       </div>
     );

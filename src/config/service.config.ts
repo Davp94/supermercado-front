@@ -13,7 +13,6 @@ export const apiClient = axios.create({
     "Content-Type": "application/json",
   },
 });
-const authService = AuthService.getInstance();
 // Variable to prevent multiple simultaneous refresh attempts
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -31,17 +30,23 @@ const processQueue = (error: any, token: string | null = null) => {
   });
   failedQueue = [];
 };
-
+const isTokenExpired = () => {
+    const expiration = Cookies.get("expiration");
+    if (!expiration) return true;
+    const expirationDate = new Date(expiration);
+    return expirationDate < new Date();
+  };
 // Request Interceptor
 apiClient.interceptors.request.use(
   async (config) => {
     let token = Cookies.get("token");
 
-    if (token && authService.isTokenExpired()) {
+    if (token && isTokenExpired()) {
       if (!isRefreshing) {
         isRefreshing = true;
         try {
-          token = (await authService.refreshToken()).token;
+          token = ( await apiClient.post(
+                  "/auth/refresh-token")).data.token;
           processQueue(null, token);
         } catch (error) {
           processQueue(error, null);
@@ -84,8 +89,9 @@ apiClient.interceptors.response.use(
       if (!isRefreshing) {
         isRefreshing = true;
         try {
-          const newToken = (await authService.refreshToken()).token;
-          processQueue(null, newToken);
+          const newToken = await apiClient.post(
+                  "/auth/refresh-token")
+          processQueue(null, newToken.data.token);
           originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
           return apiClient(originalRequest);
         } catch (refreshError) {

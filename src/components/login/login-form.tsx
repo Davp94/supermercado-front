@@ -35,11 +35,6 @@ export default function LoginForm() {
     }
   }
 
-  const getFormErrorMessage = (name: string) => {
-    return (
-      errors[name] && <small className='p-error'>{errors[name].message}</small>
-    )
-  }
   return (
     <>
       <div className='flex items-center justify-center w-[500px] p-4'>
@@ -79,7 +74,7 @@ export default function LoginForm() {
                       
 
                     />
-                    {getFormErrorMessage(field.name)}
+                   {fieldState.error && <small className="p-error">{fieldState.error.message}</small>}
                     
                   </>
                 )}
@@ -111,7 +106,7 @@ export default function LoginForm() {
                       toggleMask
                       feedback={false}
                     />
-                    {getFormErrorMessage(field.name)}
+                     {fieldState.error && <small className="p-error">{fieldState.error.message}</small>}
                     
                   </>
                 )}

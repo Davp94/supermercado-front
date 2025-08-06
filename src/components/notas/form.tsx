@@ -40,7 +40,7 @@ export default function NotasForm() {
   const toast = useRef<Toast>(null);
   const { crearNota, getEntidadesComerciales } = useNotas();
   const { getAlmacenes, getProductosAlmacen } = useInventario();
-  const searchParams = useSearchParams();
+  //const searchParams = useSearchParams();
   const {
     control,
     handleSubmit,
@@ -60,7 +60,7 @@ export default function NotasForm() {
       observaciones: "",
       movimientos: [
         {
-          almacenId: searchParams.get("almacenId") as unknown as number,
+          almacenId: 1,
           productoId: 0,
           cantidad: 1,
           tipoMovimiento: "INGRESO",
@@ -84,7 +84,7 @@ export default function NotasForm() {
 
   // Mock data initialization
   const initForm = async () => {
-    const almacenId = searchParams.get("almacenId");
+    const almacenId = 1
     const productosRetrieved = await getProductosAlmacen(
       almacenId ? +almacenId : 1
     );
@@ -152,7 +152,7 @@ export default function NotasForm() {
   // Add new movement
   const addMovimiento = () => {
     append({
-      almacenId: searchParams.get("almacenId") as unknown as number,
+      almacenId: 1,
       productoId: 0,
       cantidad: 1,
       tipoMovimiento: "INGRESO",
